@@ -17,8 +17,8 @@ module.exports.getUsers = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-module.exports.getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
+module.exports.myInfo = (req, res, next) => {
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         next(new NotFoundError('Пользователь по указанному id не найден'));
@@ -32,12 +32,19 @@ module.exports.getUserById = (req, res, next) => {
     });
 };
 
-module.exports.getMyInfo = (req, res, next) => {
-  User.findById(req.user._id)
+module.exports.getUserById = (req, res, next) => {
+  User.findById(req.params.userId)
     .then((user) => {
-      res.status(200).send(user);
+      if (!user) {
+        next(new NotFoundError('Пользователь по указанному id не найден'));
+      }
+      res.send(user);
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new CastError('Неккоретный id пользователя'));
+      } else { next(err); }
+    });
 };
 
 module.exports.createUser = async (req, res, next) => {
