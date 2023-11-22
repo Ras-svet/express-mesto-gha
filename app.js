@@ -42,6 +42,8 @@ app.use(auth);
 app.use('/users', auth, userRouter);
 app.use('/cards', auth, cardRouter);
 
+app.use(errors());
+
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({
@@ -49,10 +51,9 @@ app.use((err, req, res, next) => {
       ? 'Произошла ошибка на сервере'
       : message,
   });
+  console.log(err)
   next();
 });
-
-app.use(errors());
 
 app.listen(PORT, () => {
   console.log('App listening on port 3000');
