@@ -6,7 +6,7 @@ const ForbiddenError = require('../errors/forbidden-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.status(201).send({ data: cards }))
     .catch((err) => next(err));
 };
 
@@ -26,12 +26,12 @@ module.exports.deleteCardById = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        next(new NotFoundError('Карточка по указанному id не найдена'));
+        return next(new NotFoundError('Карточка по указанному id не найдена'));
       }
       if (card.owner.toString() !== req.user._id) {
         return next(new ForbiddenError('Нет прав для удаления этой карточки'));
       }
-      return Card.deleteOne(card).then(() => res.send({ message: `Карточка ${card} удалена` }));
+      return Card.deleteOne(card).then(() => res.status(201).send({ message: `Карточка ${card} удалена` }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -48,9 +48,9 @@ module.exports.addLike = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        next(new NotFoundError('Карточка по указанному id не найдена'));
+        return next(new NotFoundError('Карточка по указанному id не найдена'));
       }
-      res.send(card);
+      return res.status(201).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -69,7 +69,7 @@ module.exports.deleteLike = (req, res, next) => {
       if (!card) {
         return next(new NotFoundError('Карточка по указанному id не найдена'));
       }
-      return res.send(card);
+      return res.status(201).send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

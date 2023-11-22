@@ -38,7 +38,7 @@ module.exports.getUserById = (req, res, next) => {
       if (!user) {
         return next(new NotFoundError('Пользователь по указанному id не найден'));
       }
-      return res.send(user);
+      return res.status(201).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -56,7 +56,7 @@ module.exports.createUser = async (req, res, next) => {
     const newUser = await User.create({
       name, about, avatar, email, password: hash,
     });
-    res.send({
+    res.status(201).send({
       _id: newUser._id,
       name: newUser.name,
       about: newUser.about,
@@ -80,7 +80,7 @@ module.exports.login = (req, res, next) => {
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
       );
-      res.send({ token });
+      res.status(201).send({ token });
     })
     .catch((err) => next(err));
 };
@@ -92,7 +92,7 @@ module.exports.updateProfile = (req, res, next) => {
       if (!user) {
         next(new NotFoundError('Пользователь по указанному id не найден'));
       }
-      res.send(user);
+      res.status(201).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -106,9 +106,9 @@ module.exports.updateAvatar = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь по указанному id не найден'));
+        return next(new NotFoundError('Пользователь по указанному id не найден'));
       }
-      res.send(user);
+      return res.status(201).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
