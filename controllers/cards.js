@@ -67,9 +67,9 @@ module.exports.deleteLike = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        next(new NotFoundError('Карточка по указанному id не найдена'));
+        return next(new NotFoundError('Карточка по указанному id не найдена'));
       }
-      res.send(card);
+      return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

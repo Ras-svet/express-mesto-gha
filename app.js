@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
+const NotFoundError = require('./errors/not-found-error');
 const auth = require('./middlewares/auth');
 
 require('dotenv').config();
@@ -41,6 +42,10 @@ app.post('/signup', celebrate({
 app.use(auth);
 app.use('/users', auth, userRouter);
 app.use('/cards', auth, cardRouter);
+
+app.use(() => {
+  throw new NotFoundError('Запрос отправлен по неправильному URL');
+});
 
 app.use(errors());
 
