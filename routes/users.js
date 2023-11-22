@@ -5,7 +5,11 @@ const {
   getUsers, myInfo, getUserById, updateProfile, updateAvatar,
 } = require('../controllers/users');
 
-userRouter.get('/', getUsers);
+userRouter.get('/', celebrate({
+  params: Joi.object().keys({
+    _id: Joi.string().hex().length(24).required(),
+  }),
+}), getUsers);
 userRouter.get('/me', myInfo);
 userRouter.get('/:userId', getUserById);
 userRouter.patch('/me', celebrate({
