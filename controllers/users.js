@@ -38,7 +38,7 @@ module.exports.getUserById = (req, res, next) => {
       if (!user) {
         return next(new NotFoundError('Пользователь по указанному id не найден'));
       }
-      return res.status(201).send(user);
+      return res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -80,7 +80,7 @@ module.exports.login = (req, res, next) => {
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
       );
-      res.status(201).send({ token });
+      res.status(200).send({ token });
     })
     .catch((err) => next(err));
 };
@@ -92,7 +92,7 @@ module.exports.updateProfile = (req, res, next) => {
       if (!user) {
         next(new NotFoundError('Пользователь по указанному id не найден'));
       }
-      res.status(201).send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -108,7 +108,7 @@ module.exports.updateAvatar = (req, res, next) => {
       if (!user) {
         return next(new NotFoundError('Пользователь по указанному id не найден'));
       }
-      return res.status(201).send(user);
+      return res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

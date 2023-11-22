@@ -14,7 +14,7 @@ module.exports.createCard = (req, res, next) => {
   const owner = req.user._id;
   const { name, link } = req.body;
   Card.create({ name, link, owner })
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные при создании карточки'));
@@ -31,7 +31,7 @@ module.exports.deleteCardById = (req, res, next) => {
       if (card.owner.toString() !== req.user._id) {
         return next(new ForbiddenError('Нет прав для удаления этой карточки'));
       }
-      return Card.deleteOne(card).then(() => res.status(201).send({ message: `Карточка ${card} удалена` }));
+      return Card.deleteOne(card).then(() => res.status(200).send({ message: `Карточка ${card} удалена` }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -69,7 +69,7 @@ module.exports.deleteLike = (req, res, next) => {
       if (!card) {
         return next(new NotFoundError('Карточка по указанному id не найдена'));
       }
-      return res.status(201).send(card);
+      return res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
