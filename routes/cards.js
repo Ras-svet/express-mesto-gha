@@ -1,5 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 const cardRouter = require('express').Router();
+const { URL_REGEXP } = require('../utils/constants');
 const {
   getCards, createCard, deleteCardById, addLike, deleteLike,
 } = require('../controllers/cards');
@@ -8,7 +9,7 @@ cardRouter.get('/', getCards);
 cardRouter.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().pattern(/^https?:\S+.(?:jpe?g|png|bmp|test)$/),
+    link: Joi.string().required().pattern(URL_REGEXP),
   }),
 }), createCard);
 cardRouter.delete('/:cardId', celebrate({
